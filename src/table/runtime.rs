@@ -6,6 +6,7 @@ use crate::table::boot::MemoryDescriptor;
 use crate::{CStr16, Char16, Guid, Result, Status};
 use bitflags::bitflags;
 use core::fmt;
+use core::fmt::{Debug, Formatter};
 use core::mem::MaybeUninit;
 use core::ptr;
 
@@ -184,6 +185,21 @@ impl RuntimeServices {
 
 impl super::Table for RuntimeServices {
     const SIGNATURE: u64 = 0x5652_4553_544e_5552;
+}
+
+impl Debug for RuntimeServices {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("RuntimeServices")
+            .field("header", &self.header)
+            .field("get_time", &(self.get_time as *const u64))
+            .field("set_time", &(self.set_time as *const u64))
+            .field(
+                "set_virtual_address_map",
+                &(self.set_virtual_address_map as *const u64),
+            )
+            .field("reset", &(self.reset as *const u64))
+            .finish()
+    }
 }
 
 /// The current time information
